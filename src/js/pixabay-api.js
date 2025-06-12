@@ -3,20 +3,24 @@ import { showMessage } from './render-functions';
 
 const API_KEY = '50783021-cc03e5dbcf508bf27b2e23464';
 const API_URL = 'https://pixabay.com/api/';
+export const PER_PAGE = 15;
 
-export function getImagesByQuery(query) {
-  return axios
-    .get(API_URL, {
+export async function getImagesByQuery(query, page = 1) {
+  try {
+    let response = await axios.get(API_URL, {
       params: {
         key: API_KEY,
         q: query.trim(),
+        per_page: PER_PAGE,
+        page: page,
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: true,
       },
-    })
-    .then(response => response.data.hits)
-    .catch(error => {
-      throw error;
     });
+    return response.data;
+  } catch (error) {
+    showMessage(error);
+    console.log(error);
+  }
 }

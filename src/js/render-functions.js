@@ -5,6 +5,19 @@ import 'izitoast/dist/css/iziToast.min.css';
 
 const gallery = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
+export const loadMoreBtn = document.querySelector('#load-more');
+let cardHeight;
+
+export function scrollUp() {
+  cardHeight =
+    gallery.children[gallery.children.length - 1].getBoundingClientRect()
+      .height;
+  window.scrollBy({
+    top: (cardHeight + 24) * 3,
+    left: 0,
+    behavior: 'smooth',
+  });
+}
 
 const lightbox = new SimpleLightbox('.gallery a', {
   spinner: true,
@@ -16,7 +29,8 @@ const lightbox = new SimpleLightbox('.gallery a', {
 });
 
 export function createGallery(images) {
-  gallery.innerHTML = images.map(e => galleryItemMarkup(e)).join('');
+  const markup = images.map(e => galleryItemMarkup(e)).join('');
+  gallery.insertAdjacentHTML('beforeend', markup);
   lightbox.refresh();
 }
 
@@ -30,6 +44,14 @@ export function showLoader() {
 
 export function hideLoader() {
   loader.style.display = 'none';
+}
+
+export function showLoadMoreButton() {
+  loadMoreBtn.style.display = 'block';
+}
+
+export function hideLoadMoreButton() {
+  loadMoreBtn.style.display = 'none';
 }
 
 export function showMessage(message) {
