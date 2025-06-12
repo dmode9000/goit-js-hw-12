@@ -7,7 +7,7 @@ export const PER_PAGE = 15;
 
 export async function getImagesByQuery(query, page = 1) {
   try {
-    let response = await axios.get(API_URL, {
+    const { data } = await axios.get(API_URL, {
       params: {
         key: API_KEY,
         q: query.trim(),
@@ -18,9 +18,8 @@ export async function getImagesByQuery(query, page = 1) {
         safesearch: true,
       },
     });
-    return response.data;
+    return data;
   } catch (error) {
     showMessage(error);
-    console.log(error);
   }
 }

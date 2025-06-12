@@ -61,15 +61,16 @@ export function showMessage(message) {
   });
 }
 
-function galleryItemMarkup({
-  largeImageURL,
-  webformatURL,
-  tags,
-  likes,
-  views,
-  comments,
-  downloads,
-}) {
+function galleryItemMarkup(image) {
+  const {
+    largeImageURL,
+    webformatURL,
+    tags,
+    likes,
+    views,
+    comments,
+    downloads,
+  } = image;
   return `
         <li class="gallery-item">
           <a class="gallery-item-link" href="${largeImageURL}">
