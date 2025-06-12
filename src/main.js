@@ -38,7 +38,11 @@ form.addEventListener('submit', event => {
         createGallery(response.hits);
       }
 
-      if (response.totalHits > PER_PAGE) showLoadMoreButton();
+      if (response.totalHits > PER_PAGE) {
+        showLoadMoreButton();
+      } else {
+        hideLoadMoreButton();
+      }
     })
     .catch(error => {
       hideLoader();
