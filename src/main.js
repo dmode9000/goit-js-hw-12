@@ -15,7 +15,7 @@ const form = document.querySelector('.form');
 let page = 1;
 let queryText;
 
-form.addEventListener('submit', event => {
+form.addEventListener('submit', async event => {
   event.preventDefault();
   queryText = form.elements['search-text'].value.trim();
   if (!queryText) {
@@ -25,47 +25,39 @@ form.addEventListener('submit', event => {
   clearGallery();
   showLoader();
   page = 1;
+  try {
+    const response = await getImagesByQuery(queryText);
+    hideLoader();
 
-  getImagesByQuery(queryText)
-    .then(response => {
-      hideLoader();
+    if (response.hits.length === 0) {
+      showMessage(
+        'Sorry, there are no images matching your search query. Please try again'
+      );
+    } else {
+      createGallery(response.hits);
+    }
 
-      if (response.hits.length === 0) {
-        showMessage(
-          'Sorry, there are no images matching your search query. Please try again'
-        );
-      } else {
-        createGallery(response.hits);
-      }
-
-      if (response.totalHits > PER_PAGE) {
-        showLoadMoreButton();
-      } else {
-        hideLoadMoreButton();
-      }
-    })
-    .catch(error => {
-      hideLoader();
-      showMessage(error.message);
-    });
+    response.totalHits > PER_PAGE ? showLoadMoreButton() : hideLoadMoreButton();
+  } catch (error) {
+    hideLoader();
+    showMessage('getImagesByQuery() ' + error.message);
+  }
 });
 
-loadMoreBtn.addEventListener('click', event => {
+loadMoreBtn.addEventListener('click', async event => {
   page++;
-  getImagesByQuery(queryText, page)
-    .then(response => {
-      createGallery(response.hits);
-      scrollUp();
-      if (response.totalHits <= PER_PAGE * page) {
-        hideLoadMoreButton();
-        showMessage(
-          `We're sorry, but you've reached the end of search results.`
-        );
-      }
-    })
-
-    .catch(error => {
-      hideLoader();
-      showMessage(error.message);
-    });
+  showLoader();
+  try {
+    const response = await getImagesByQuery(queryText, page);
+    hideLoader();
+    createGallery(response.hits);
+    scrollUp();
+    if (response.totalHits <= PER_PAGE * page) {
+      hideLoadMoreButton();
+      showMessage(`We're sorry, but you've reached the end of search results.`);
+    }
+  } catch (error) {
+    hideLoader();
+    showMessage(error.message);
+  }
 });
