@@ -52,6 +52,7 @@ async function fetchImages(queryText, page) {
       showMessage(
         'Sorry, there are no images matching your search query. Please try again'
       );
+      return;
     }
 
     // show gallery
